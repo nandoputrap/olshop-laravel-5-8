@@ -8,6 +8,7 @@ use App\Barang;
 use App\Pesanan;
 use App\PesananDetail;
 use Auth;
+use Alert;
 use Carbon\Carbon;
 
 class PesanController extends Controller
@@ -74,10 +75,36 @@ class PesanController extends Controller
         $pesanan->jumlah_harga = $pesanan->jumlah_harga+$barang->harga*$request->jumlah;
         $pesanan->update();
 
+        // Alert::success('Berhasil menambah ke keranjang', 'Sukses');
+        // alert('Berhasil');
+        // alert()->success('Berhasil menambah ke keranjang', 'Sukses');
         return redirect('home');
 
         //update
         // $pesanan_baru->jumlah_harga = $barang->harga*$request->jumlah_pesanan;
-        return redirect('home');
+    }
+
+    public function keranjang(){
+        $pesanan = Pesanan::where('user_id', Auth::user()->id)->where('status', 0)->first();
+        $pesananDetails = PesananDetail::where('pesanan_id', $pesanan->id)->get();
+
+        return view('keranjang', compact('pesanan', 'pesananDetails'));
+    }
+
+    public function hapus($id){
+        $pesananDetail = PesananDetail::where('id', $id)->first();
+
+        // mengurangi jumlah harga total pesanan
+        $pesanan = Pesanan::where('id', $pesananDetail->pesanan_id)->first();
+        $pesanan->jumlah_harga = $pesanan->jumlah_harga-$pesananDetail->jumlah_harga;
+
+        $pesanan->update();
+
+        $pesananDetail->delete();
+        return redirect('keranjang');
+    }
+
+    public function konfirmasi(){
+        return 'ok';
     }
 }

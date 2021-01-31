@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Ndos Garden</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -18,12 +18,15 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
+
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/home') }}">
                     Ndos Garden
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -49,6 +52,17 @@
                                 </li>
                             @endif
                         @else
+                        <?php 
+                        $pesanan = \App\Pesanan::where('user_id', Auth::user()->id)->where('status', 0)->first();
+                        if(empty($pesanan)){
+                            $keranjang = 0;
+                        }else{
+                            $keranjang = \App\PesananDetail::where('pesanan_id', $pesanan->id)->count();
+                        }
+                        ?> {{-- hitung jumlah checkout --}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/keranjang">{{ __('Keranjang') }}&nbsp;<span class="badge badge-danger">{{$keranjang}}</span></a>
+                        </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
@@ -75,6 +89,15 @@
         <main class="py-4">
             @yield('content')
         </main>
+
+
+        <footer class="container-fluid text-center mt-5">
+            <p>Made with ❤️️ by Nando Putra Pratama</p>
+        </footer>
+
+
+    <script src="{{ asset('js/sweetalert.min.js') }}" defer></script>
+    @include('sweet::alert');
     </div>
 </body>
 </html>
