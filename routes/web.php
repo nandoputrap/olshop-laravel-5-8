@@ -22,5 +22,8 @@ Route::get('/pesan/{id}', 'PesanController@index');
 Route::post('/pesan/{id}', 'PesanController@pesan');
 
 Route::get('keranjang', 'PesanController@keranjang');
-Route::get('konfirmasi', 'PesanController@konfirmasi');
+Route::post('konfirmasi', 'PesanController@konfirmasi');
 Route::delete('keranjang/{id}', 'PesanController@hapus');
+
+Route::get('riwayat', 'PesanController@riwayat');
+Route::get('riwayatdetail/{id}', 'PesanController@riwayat_detail');

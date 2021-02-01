@@ -86,9 +86,12 @@ class PesanController extends Controller
 
     public function keranjang(){
         $pesanan = Pesanan::where('user_id', Auth::user()->id)->where('status', 0)->first();
-        $pesananDetails = PesananDetail::where('pesanan_id', $pesanan->id)->get();
-
-        return view('keranjang', compact('pesanan', 'pesananDetails'));
+        if(!empty($pesanan)){
+            $pesananDetails = PesananDetail::where('pesanan_id', $pesanan->id)->get();
+            return view('keranjang', compact('pesanan', 'pesananDetails'));
+        }else{
+            return view('keranjang', compact('pesanan'));
+        }
     }
 
     public function hapus($id){
@@ -105,6 +108,36 @@ class PesanController extends Controller
     }
 
     public function konfirmasi(){
-        return 'ok';
+        $pesanan = Pesanan::where('user_id', Auth::user()->id)->where('status', 0)->first();
+        $pesananId = $pesanan->id;
+        $pesanan->status = 1;
+        $pesanan->update();
+
+        $pesananDetails = PesananDetail::where('pesanan_id', $pesananId)->get();
+
+        foreach($pesananDetails as $item){
+            $barang = Barang::where('id', $item->barang_id)->first();
+            $barang->stok = $barang->stok-$item->jumlah;
+            $barang->update();
+        }
+
+        return redirect('home');
+    }
+
+    public function riwayat_detail($id){
+        $pesanan = Pesanan::where('user_id', Auth::user()->id)->where('id', $id)->first();
+        $pesananDetails = PesananDetail::where('pesanan_id', $pesanan->id)->get();
+
+        return view('riwayatdetail', compact('pesanan', 'pesananDetails'));
+        // return $pesananDetails;
+    }
+
+    public function riwayat(){
+        $pesanans = Pesanan::where('user_id', Auth::user()->id)->get();
+        // $pesananDetails = PesananDetail::where('pesanan_id', $pesanan->id)->get();
+
+        return view('riwayat', compact('pesanans'));
+        // return $pesanans;
+        // return $pesananDetails;
     }
 }

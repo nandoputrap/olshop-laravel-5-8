@@ -7,14 +7,14 @@
             <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Keranjang</li>
+                <li class="breadcrumb-item active" aria-current="page">Detail Riwayat Belanja</li>
             </ol>
         </nav>
         </div>
     </div>
     <div class="row mt-5">
         <div class="col-md-12">
-            <h2>Keranjang Belanja</h2>
+            <h2>Detail Riwayat Belanja</h2>
         </div>
     </div>
     <div class="row mt-3">
@@ -27,7 +27,6 @@
                             <th scope="col">Nama Barang</th>
                             <th scope="col">Jumlah</th>
                             <th scope="col">Harga</th>
-                            <th scope="col">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,37 +41,14 @@
                                 <td>{{$item->barang->nama_barang}}</td>
                                 <td>{{$item->jumlah}}</td>
                                 <td>Rp{{number_format($item->jumlah_harga)}}</td>
-                                <td>
-                                    <form action="{{url('keranjang')}}/{{$item->id}}" method="POST">
-                                        @csrf
-                                        {{ method_field('DELETE') }}
-                                        <button class="btn btn-outline-danger" type="submit">Hapus</button>
-                                    </form>
-                                </td>
                             </tr>
                             @endforeach
-                            @if(!empty($pesanan))
                             <tr>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td><strong>Total Harga</strong></td>
                                 <td><strong>Rp{{number_format($pesanan->jumlah_harga)}}</strong></td>
-                                <td>
-                                    <form action="{{url('konfirmasi')}}" method="POST">
-                                        @csrf
-                                        <button class="btn btn-primary" type="submit">Beli sekarang</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            @else
-                            <tr class="text-center">
-                                <td colspan="6">Data kosong</td>
-                            </tr>
-                            @endif
-                        @else
-                            <tr class="text-center">
-                                <td colspan="6">Tidak ada barang di keranjang</td>
                             </tr>
                         @endif
                         
